@@ -1,0 +1,9 @@
+[submodule "Joystick"]
+	path = Joystick
+	url = https://github.com/MHeironimus/ArduinoJoystickLibrary/tree/version-1.0
+[submodule "LiquidCrystal_I2C"]
+	path = LiquidCrystal_I2C
+	url = https://github.com/marcoschwartz/LiquidCrystal_I2C
+[submodule "Adafruit_NeoPixel"]
+	path = Adafruit_NeoPixel
+	url = https://github.com/adafruit/Adafruit_NeoPixel
