@@ -6,6 +6,7 @@ Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID dev
 
 ## You will need to install 3 additional libraries:
 Info on how to install additional libraries can be found here.
+https://www.arduino.cc/en/Guide/libraries#toc4
 
 ### Arduino Joystick library ver 1.0
 https://github.com/MHeironimus/ArduinoJoystickLibrary/tree/version-1.0
