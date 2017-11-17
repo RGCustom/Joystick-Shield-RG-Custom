@@ -24,42 +24,42 @@ LiquidCrystal_I2C lcd(0x3F, 16, 2); // lcd setup
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 //**************************************************
-//              PUSHBUTTONS SETUP
+//      PUSHBUTTONS SETUP / НАСТРОЙКА КНОПОК
 //**************************************************
-const int PBnum = 22;        // Number of pushbuttons
-int PBreg[] = {1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3}; // shiftregisters with pushbuttons
-int PBpin[] = {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5}; // shiftregister pins with pushbuttons
-int PBstate[PBnum]; // State of pushbuttons
+const int PBnum = 22;        // Number of pushbuttons / количество кнопок
+int PBreg[] = {1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3}; // shiftregisters with pushbuttons / регистры с кнопками
+int PBpin[] = {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7,0,1,2,3,4,5}; // shiftregister pins with pushbuttons / ножки регистров с кнопками
+int PBstate[PBnum]; // State of pushbuttons / состояние кнопок (для индикации)
 
 //**************************************************
-//              TOGGLE SWITCHES SETUP
+//  TOGGLE SWITCHES SETUP / НАСТРОЙКА ТУМБЛЕРОВ
 //**************************************************
-const int TGnum = 10;        // Number of toggle switches
-int TGreg[] = {3,3,4,4,4,4,4,4,4,4}; // shiftregisters with toggleswitches
-int TGpin[] = {6,7,0,1,2,3,4,5,6,7}; // shiftregister pins with toggleswitches
-int TGstate[TGnum]; // State of toggle switches (for indication on LCD or leds)
-int TGdelay(15); // Toggle switch pulse duration in ms
+const int TGnum = 10;        // Number of toggle switches / количество тумблеров
+int TGreg[] = {3,3,4,4,4,4,4,4,4,4}; // shiftregisters with toggleswitches / регистры с тумблерами
+int TGpin[] = {6,7,0,1,2,3,4,5,6,7}; // shiftregister pins with toggleswitches / ножки регистров с тумблерами
+int TGstate[TGnum]; // State of toggle switches (for indication on LCD or leds) / состояние тумблеров (для индикации)
+int TGdelay(15); // Toggle switch pulse duration in ms / длинна импульса тумблера
 
 //**************************************************
-//              HATS SETUP
+//       HATS SETUP / НАСТРОЙКА ХАТОК
 //**************************************************
-const int HATnum = 4;        // Number of POV HAT switches (one POV hat is 4 buttons, so multiply by 4)
-int HATreg[] = {5,5,5,5}; // shiftregisters with hatswitches
-int HATpin[] = {0,1,2,3}; // shiftregister pins with hatswitches
-int HATstate[HATnum]; // State of POV HAT switches (for indication on LCD or leds)
+const int HATnum = 4;        // Number of POV HAT switches (one POV hat is 4 buttons, so multiply by 4) / количество хаток. Одна хатка - 4 кнопки, так что умножайте на 4.
+int HATreg[] = {5,5,5,5}; // shiftregisters with hatswitches / регистры с хатками
+int HATpin[] = {0,1,2,3}; // shiftregister pins with hatswitches / ножки регистров с хатками
+int HATstate[HATnum]; // State of POV HAT switches (for indication on LCD or leds) / состояние хаток (для индикации)
 
 //**************************************************
-//              ENCODERS SETUP
+//      ENCODERS SETUP / НАСТРОЙКА ЭНКОДЕРОВ
 //**************************************************
-int ENCnum = 2;        // Number of rotary encoders (each encoder L+R turns counts as one)
-int ENCregA[] = {5,5}; // shiftregisters with encoders direction A
-int ENCpinA[] = {4,7}; // shiftregister pins encoders direction A
-int ENCregB[] = {5,5}; // shiftregisters with encoders direction B
-int ENCpinB[] = {5,6}; // shiftregister pins encoders direction B
-int ENCA[2]; // [x] x = ENCnum
-int ENCB[2]; // [x] x = ENCnum
-int ENC_Aprev[2];  // [x] x = ENCnum
-int ENCtime[] = {4,4}; // Encoders timing in ms. Encrease for slower and decrease for faster.
+const int ENCnum = 2;        // Number of rotary encoders (each encoder L+R turns counts as one) / количество энкодеров. 
+int ENCregA[] = {5,5}; // shiftregisters with encoders direction A / регистры с энкодерами с вращением в сторону А
+int ENCpinA[] = {4,7}; // shiftregister pins encoders direction A / регистры с энкодерами с вращением в сторону B
+int ENCregB[] = {5,5}; // shiftregisters with encoders direction B / регистры с энкодерами с вращением в сторону B
+int ENCpinB[] = {5,6}; // shiftregister pins encoders direction B / ножки регистров с энкодерами с вращением в сторону B
+int ENCA[ENCnum]; 
+int ENCB[ENCnum]; 
+int ENC_Aprev[ENCnum];  
+int ENCtime[] = {4,4}; // Encoders timing in ms. Encrease for slower and decrease for faster. Тайминги энкодеров
 unsigned long loopTime;
 
 
@@ -71,7 +71,7 @@ uint8_t hidReportId = 0x04; // Default: 0x03 - Indicates the joystick's HID repo
 uint8_t buttonCount = 32; //Button count
 
 //**************************************************
-//              AXIS INPUTS SETUP
+//        AXIS INPUTS SETUP / НАСТРОЙКА ОСЕЙ
 //**************************************************
 
 const int xAxis = A0;         // analog sensor for X axis
