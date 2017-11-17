@@ -11,6 +11,7 @@ i2c text LCD displays. ws2812 leds.
 3. 5pcs CD4021BE shift registers
 4. 5pcs 10kOhm sip9 array resistors.
 5. 2.54mm Male PCB Single Row Straight Header Strip Connectors
+6. 1kOhm resistors for leds.
 
 Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID devices an Arduino Leonardo or Arduino Micro (or any Arduino clone that is based on the ATmega32u4) can support. This will not work with Arduino IDE 1.6.5 (or below).
 
