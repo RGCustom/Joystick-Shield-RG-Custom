@@ -19,13 +19,10 @@ Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID dev
 Info on how to install additional libraries can be found here.
 https://www.arduino.cc/en/Guide/libraries#toc4
 
+Libraries included as submodules.
+
 ### Arduino Joystick library ver 1.0
-https://github.com/MHeironimus/ArduinoJoystickLibrary/tree/version-1.0
-
 ### LiquidCrystal_I2C
-https://github.com/marcoschwartz/LiquidCrystal_I2C
-
 ### Adafruit_NeoPixel
-https://github.com/adafruit/Adafruit_NeoPixel
 
 ### Link on PCB in OSH Park https://oshpark.com/shared_projects/YERseqpP
