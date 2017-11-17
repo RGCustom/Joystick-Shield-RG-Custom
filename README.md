@@ -13,16 +13,15 @@ i2c text LCD displays. ws2812 leds.
 5. 2.54mm Male PCB Single Row Straight Header Strip Connectors
 6. 1kOhm resistors for leds.
 
-Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID devices an Arduino Leonardo or Arduino Micro (or any Arduino clone that is based on the ATmega32u4) can support. This will not work with Arduino IDE 1.6.5 (or below).
+Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID devices. This will not work with Arduino IDE 1.6.5 (or below).
 
 ## You will need to install 3 additional libraries:
 Info on how to install additional libraries can be found here.
 https://www.arduino.cc/en/Guide/libraries#toc4
 
-Libraries included as submodules.
-
-### Arduino Joystick library ver 1.0
-### LiquidCrystal_I2C
-### Adafruit_NeoPixel
+### Libraries included as submodules.
+Arduino Joystick library ver 1.0
+LiquidCrystal_I2C
+Adafruit_NeoPixel
 
 ### Link on PCB in OSH Park https://oshpark.com/shared_projects/YERseqpP
