@@ -1,4 +1,4 @@
-# Joystick Shield RG Custom v2.0 best to use with control panels and potentiometers. 
+# Joystick Shield RG Custom v3.0
 Joystick shield for Arduino Pro Micro with shift registers, i2c text LCD and ws2812 led support.
 RG Custom PCB  shield allows you to easy create your own control panel, throttle or joystick device. 
 
