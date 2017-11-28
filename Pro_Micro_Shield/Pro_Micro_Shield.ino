@@ -2,7 +2,7 @@
 //  Name    : RG Custom Pro Micro shield code                   //
 //  Author  : Konstantin `RenderG` Yakushev                     //
 //  Date    : 15 Nov, 2017                                      //
-//  Version : 4.0                                               //
+//  Version : 1.0                                               //
 //          :                                                   //
 //****************************************************************
 #include <Wire.h>
