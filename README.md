@@ -34,5 +34,8 @@ Adafruit_NeoPixel
 Buttons (or toggle switches) all have common ground and connected to pins between shift register and resistor.
 Instead of 5pcs 10kOhm sip9 array resistors use 40pcs 10kOhm resistors.
 
-## More info and support you can recieve on Discord channel.
-https://discord.gg/tjndHQ7
+
+## Contacts section:
+### Facebook https://www.facebook.com/RGcustom/
+### RG Custom Discord channel https://discord.gg/tjndHQ7 
+### E-Mail: rgcustm@gmail.com
