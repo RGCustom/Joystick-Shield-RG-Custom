@@ -32,3 +32,4 @@ Adafruit_NeoPixel
 ![breadboard pic](breadboard_scheme.png)
 
 Buttons (or toggle switches) all have common ground and connected to pins between shift register and resistor.
+Instead of 5pcs 10kOhm sip9 array resistors use 40pcs 10kOhm resistors.
