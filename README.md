@@ -1,3 +1,5 @@
+![Shieldpic](Shield_PCB/shield.png)
+
 # Joystick Shield RG Custom v1.0
 Joystick shield for Arduino Pro Micro with shift registers, i2c text LCD and ws2812 led support.
 RG Custom PCB  shield allows you to easy create your own control panel, throttle or joystick device. 
@@ -25,3 +27,8 @@ LiquidCrystal_I2C
 Adafruit_NeoPixel
 
 ### Link on PCB in OSH Park https://oshpark.com/shared_projects/YERseqpP
+
+### You also can build your own shield, using breadboard.
+![breadboard pic](breadboard_scheme.png)
+
+Buttons (or toggle switches) all have common ground and connected to pins between shift register and resistor.
