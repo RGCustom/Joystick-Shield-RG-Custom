@@ -1,4 +1,4 @@
-![Shieldpic](Shield_PCB/shield.png)
+![Shieldpic](shield.png)
 
 # Joystick Shield RG Custom v1.0
 Joystick shield for Arduino Pro Micro with shift registers, i2c text LCD and ws2812 led support.
