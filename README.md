@@ -22,9 +22,9 @@ Info on how to install additional libraries can be found here.
 https://www.arduino.cc/en/Guide/libraries#toc4
 
 ### Libraries included as submodules.
-Arduino Joystick library ver 1.0
-LiquidCrystal_I2C
-Adafruit_NeoPixel
+Arduino Joystick library ver 1.0  
+LiquidCrystal_I2C  
+Adafruit_NeoPixel  
 
 ### Link on PCB in OSH Park https://oshpark.com/shared_projects/YERseqpP
 
