@@ -1,4 +1,4 @@
-![Shieldpic](Shield_PCB/shield.png)
+![Shieldpic](shield.png)
 
 # Joystick Shield RG Custom v1.0
 Joystick shield for Arduino Pro Micro with shift registers, i2c text LCD and ws2812 led support.
@@ -17,14 +17,14 @@ i2c text LCD displays. ws2812 leds.
 
 Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID devices. This will not work with Arduino IDE 1.6.5 (or below).
 
-## You will need to install 3 additional libraries:
+### You will need to install 3 additional libraries:
 Info on how to install additional libraries can be found here.
 https://www.arduino.cc/en/Guide/libraries#toc4
 
 ### Libraries included as submodules.
-Arduino Joystick library ver 1.0
-LiquidCrystal_I2C
-Adafruit_NeoPixel
+Arduino Joystick library ver 1.0  
+LiquidCrystal_I2C  
+Adafruit_NeoPixel  
 
 ### Link on PCB in OSH Park https://oshpark.com/shared_projects/YERseqpP
 
@@ -36,6 +36,9 @@ Instead of 5pcs 10kOhm sip9 array resistors use 40pcs 10kOhm resistors.
 
 
 ## Contacts section:
-### Facebook https://www.facebook.com/RGcustom/
-### RG Custom Discord channel https://discord.gg/tjndHQ7 
-### E-Mail: rgcustm@gmail.com
+Facebook https://www.facebook.com/RGcustom/  
+RG Custom Discord channel https://discord.gg/tjndHQ7  
+E-Mail: rgcustm@gmail.com  
+IL-2 Forums (russian): https://forum.il2sturmovik.ru/topic/6511-opensource-kontroller-na-arduino/  
+StarCitizen Spectrum thread: https://robertsspaceindustries.com/spectrum/community/SC/forum/50264/thread/open-source-arduino-controller-for-control-panels  
+
