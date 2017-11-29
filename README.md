@@ -36,6 +36,9 @@ Instead of 5pcs 10kOhm sip9 array resistors use 40pcs 10kOhm resistors.
 
 
 ## Contacts section:
-### Facebook https://www.facebook.com/RGcustom/
-### RG Custom Discord channel https://discord.gg/tjndHQ7 
-### E-Mail: rgcustm@gmail.com
+Facebook https://www.facebook.com/RGcustom/  
+RG Custom Discord channel https://discord.gg/tjndHQ7  
+E-Mail: rgcustm@gmail.com  
+IL-2 Forums (russian): https://forum.il2sturmovik.ru/topic/6511-opensource-kontroller-na-arduino/  
+StarCitizen Spectrum thread: https://robertsspaceindustries.com/spectrum/community/SC/forum/50264/thread/open-source-arduino-controller-for-control-panels  
+
