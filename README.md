@@ -13,7 +13,7 @@ i2c text LCD displays. ws2812 leds.
 2. Arduino pro micro
 3. 5pcs CD4021BE shift registers
 4. 5pcs 10kOhm sip9 array resistors.
-5. 2.54mm Male PCB Single Row Straight Header Strip Connectors
+5. 2.54mm Male PCB Single Row Straight Header Strip Connectors. 
 6. 1kOhm resistors for leds.
 
 Arduino IDE 1.6.6 (or above) library that adds a joystick to the list of HID devices. This will not work with Arduino IDE 1.6.5 (or below).
@@ -33,7 +33,7 @@ Adafruit_NeoPixel
 ![breadboard pic](breadboard_scheme.png)
 
 Buttons (or toggle switches) all have common ground and connected to pins between shift register and resistor.
-Instead of 5pcs 10kOhm sip9 array resistors use 40pcs 10kOhm resistors.
+Instead of 5pcs 10kOhm sip9 array resistors use 40pcs 10kOhm resistors. 
 
 
 ## Contacts section:
