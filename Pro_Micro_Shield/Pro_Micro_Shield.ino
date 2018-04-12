@@ -185,7 +185,7 @@ void loop() {
   //set it to 1 to collect parallel data
   digitalWrite(latchPin, 1);
   //set it to 1 to collect parallel data, wait
-  delayMicroseconds(20);
+  //delayMicroseconds(20);
   //set it to 0 to transmit data serially
   digitalWrite(latchPin, 0);
 
