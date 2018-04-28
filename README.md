@@ -5,7 +5,7 @@ Joystick shield for Arduino Pro Micro with shift registers, i2c text LCD and ws2
 RG Custom PCB  shield allows you to easy create your own control panel, throttle or joystick device. 
 Shield PCB size is 95x52 mm
 
-Controller supports: 4 analogue inputs. (256 steps are more than enough to 10k Ohm pots), 40 inputs. Pushbuttons, toggle switches with pulse, rotary encoders, pov hats.
+Controller supports: 4 analogue inputs (6 max), 40 digital inputs. Pushbuttons, toggle switches with pulse, rotary encoders, pov hats.
 i2c text LCD displays. ws2812 leds.
 
 ### To build it you will need.
