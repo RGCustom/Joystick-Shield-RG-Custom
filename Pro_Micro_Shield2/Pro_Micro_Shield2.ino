@@ -1,16 +1,17 @@
 //**************************************************************//
-//  Name    : RG Custom Pro Micro shield code                   //
+//  Name    : RG Custom Pro Micro shield code                       //
 //  Author  : Konstantin `RenderG` Yakushev                     //
-//  Date    : 15 Nov, 2017                                      //
-//  Version : 1.0                                               //
+//  Date    : 28 Apr, 2018                                      //
+//  Version : 2.0                                               //
 //          :                                                   //
 //****************************************************************
 #include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x3F, 16, 2); // lcd setup
 #include <Joystick.h>
+#include <LiquidCrystal_I2C.h>
 #include <Adafruit_NeoPixel.h>
-
+LiquidCrystal_I2C lcd(0x3F, 16, 2); // lcd setup
+// Create the Joystick
+Joystick_ Joystick;
 // Which pin on the Arduino is connected to the NeoPixels?
 // On a Trinket or Gemma we suggest changing this to 1
 #define PIN            A9
@@ -59,16 +60,18 @@ int ENCpinB[] = {5,6}; // shiftregister pins encoders direction B / ножки �
 int ENCA[ENCnum]; 
 int ENCB[ENCnum]; 
 int ENC_Aprev[ENCnum];  
-int ENCtime[] = {4,4}; // Encoders timing in ms. Encrease for slower and decrease for faster. Тайминги энкодеров
+int ENCtime[] = {4,4}; // Encoders timing in ms. increase for slower and decrease for faster. Тайминги энкодеров
 unsigned long loopTime;
 
 
 // Set to true to test "Auto Send" mode or false to test "Manual Send" mode.
-//const bool testAutoSendMode = true;
-const bool testAutoSendMode = false;
+const bool initAutoSendState = true;
+//const bool initAutoSendState = false;
 
-uint8_t hidReportId = 0x04; // Default: 0x03 - Indicates the joystick's HID report ID. This value must be unique if you are creating multiple instances of Joystick. Do not use 0x01 or 0x02 as they are used by the built-in Arduino Keyboard and Mouse libraries.
+uint8_t joystickType = 0x08; // Default: 0x03 - Indicates the joystick's HID report ID. This value must be unique if you are creating multiple instances of Joystick. Do not use 0x01 or 0x02 as they are used by the built-in Arduino Keyboard and Mouse libraries.
 uint8_t buttonCount = 32; //Button count
+uint8_t hatSwitchCount = 2;
+
 
 //**************************************************
 //        AXIS INPUTS SETUP / НАСТРОЙКА ОСЕЙ
@@ -78,22 +81,37 @@ const int xAxis = A0;         // analog sensor for X axis
 const int yAxis = A3;         // analog sensor for Y axis
 const int zAxis = A2;         // analog sensor for Z axis
 const int rXAxis = A1;        // analog sensor for rX axis
+
+bool includeXAxis = true; //Indicates if the X Axis is available on the joystick.
+bool includeYAxis = true; //Indicates if the Y Axis is available on the joystick.
+bool includeZAxis = true; //Indicates if the Z Axis (in some situations this is the right X Axis) is available on the joystick.
+bool includeRxAxis = true; //Indicates if the X Axis Rotation (in some situations this is the right Y Axis) is available on the joystick.
+bool includeRyAxis = false; //Indicates if the Y Axis Rotation is available on the joystick.
+bool includeRzAxis = false; //Indicates if the Z Axis Rotation is available on the joystick.
+bool includeRudder = false; //Indicates if the Rudder is available on the joystick.
 const int CalibrationPin = 8; // calibration toggle switch
 
 // axis calibration variables:
-int sensorValueX = 0;         // the sensor X value
+int16_t sensorValueX = 0;         // the sensor X value
 int sensorValueY = 0;         // the sensor Y value
 int sensorValueZ = 0;         // the sensor Z value
 int sensorValueRx = 0;        // the sensor Rx value
+int sensorValueRy = 0;        // the sensor Rx value
+int sensorValueRz = 0;        // the sensor Rx value
 
 int sensorMinX = 0;           // minimum sensor value
-int sensorMaxX = 255;         // maximum sensor value
+int sensorMaxX = 1;         // maximum sensor value
 int sensorMinY = 0;           // minimum sensor value
-int sensorMaxY = 255;         // maximum sensor value
+int sensorMaxY = 1;         // maximum sensor value
 int sensorMinZ = 0;           // minimum sensor value
-int sensorMaxZ = 255;         // maximum sensor value
+int sensorMaxZ = 1;         // maximum sensor value
 int sensorMinRx = 0;           // minimum sensor value
-int sensorMaxRx = 359;         // maximum sensor value
+int sensorMaxRx = 1;         // maximum sensor value
+int sensorMinRy = 0;           // minimum sensor value
+int sensorMaxRy = 1;         // maximum sensor value
+int sensorMinRz = 0;           // minimum sensor value
+int sensorMaxRz = 1;         // maximum sensor value*/
+
 
 // variables will change:
 int CalibrationState = 0;     // variable for reading calibration status
@@ -127,11 +145,15 @@ byte lastState[] = {72, 73, 74, 75, 76};  //01001000,01001001,01001010,01001011,
 // will quickly become a bigger number than can be stored in an int.
 
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 0;    // the debounce time; increase if the output flickers
+unsigned long debounceDelay = 5;    // the debounce time; increase if the output flickers
 
 //define an array that has a place for the values of
 
 byte settingVal[] = {  1, 1, 1, 1, 1, 1, 1, 1};
+
+unsigned long lastlooptime = 0;  // the last time the output pin was toggled
+unsigned long looptime = 0;    // the debounce time; increase if the output flickers
+
 
 
 
@@ -140,44 +162,35 @@ void setup() {
  // Serial.begin(9600);
 
   //start Joystick
-  Joystick.begin(false);
+  Joystick.begin(initAutoSendState);
+  
+ //defining axis ranges
+  Joystick.setXAxisRange(-32767, 32767);
+  Joystick.setYAxisRange(-32767, 32767); 
+  Joystick.setZAxisRange(-32767, 32767); 
+  Joystick.setRxAxisRange(-32767, 32767);
+  Joystick.setRyAxisRange(-32767, 32767);
+  Joystick.setRzAxisRange(-32767, 32767); 
+//  Joystick.setRudderAxisRange(0, 1023);
+//  Joystick.setThrottleAxisRange(0, 1023); 
 
   //define pin modes
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, INPUT);
+ 
   pixels.begin(); // This initializes the NeoPixel library.
 
 //**************************************************
 //              LCD INITIALISING STRING
 //**************************************************
-
   lcd.init();
   lcd.backlight();// Enable LCD backlight
-  lcd.print("Initialising");
-  lcd.setCursor(0, 0);
-  delay(300);
-  lcd.print("Initialising.");
-  lcd.setCursor(0, 0);
-  delay(300);
-  lcd.print("Initialising..");
-  lcd.setCursor(0, 0);
-  delay(300);
-  lcd.print("Initialising...");
-  lcd.setCursor(0, 0);
-  delay(300);
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  delay(300);
-  lcd.print("-= RG CUSTOM =-");
-  lcd.setCursor(0, 0);
-  delay(300);
-  lcd.setCursor(0, 1);
-  lcd.print("BTN:");
-  
 }
 
 void loop() {
+  looptime = millis();
+
 //**************************************************
 //              READING SHIFT REGISTERS
 //**************************************************
@@ -212,19 +225,17 @@ void loop() {
              // activate button if the new button state ON or OF
              if (bitRead(switchState[PBreg[i]], PBpin[i]) < 1) {
                //action on button press
-               Joystick.pressButton(i);
+               Joystick.setButton(i,1);
+               //lcd.setCursor(1, 1);
+               //lcd.print("ON");
                PBstate[i] = 1;
-               Joystick.sendState();
-               lcd.setCursor(4, 1);
-               lcd.print("ON ");
                }
               else {
                //action on button release
-               Joystick.releaseButton(i);
+               Joystick.setButton(i,0);
+               //lcd.setCursor(1, 1);
+               //lcd.print("OFF");
                PBstate[i] = 0;
-               Joystick.sendState();
-               lcd.setCursor(4, 1);
-               lcd.print("OFF");
              }
             }
           }
@@ -251,21 +262,21 @@ void loop() {
              // activate button if the new button state ON or OF
              if (bitRead(switchState[TGreg[i]], TGpin[i]) < 1) {
                //action on button press
-               Joystick.pressButton(i + PBnum);
-               Joystick.sendState();
+               Joystick.setButton(i + PBnum,1);
                TGstate[i] = 1;
+               //lcd.setCursor(1, 1);
+               //lcd.print("ON");
                delay(TGdelay);
-               Joystick.releaseButton(i + PBnum);
-               Joystick.sendState();
+               Joystick.setButton(i + PBnum,0);
                }
               else {
                //action on button release
-               Joystick.pressButton(i + PBnum);
-               Joystick.sendState();
+               Joystick.setButton(i + PBnum,1);
+               //lcd.setCursor(1, 1);
+               //lcd.print("OFF");
                delay(TGdelay);
                TGstate[i] = 0;
-               Joystick.releaseButton(i + PBnum);
-               Joystick.sendState();
+               Joystick.setButton(i + PBnum,0);
              }
             }
           }
@@ -274,10 +285,11 @@ void loop() {
 // *************************************************
 //     TOGGLE SWITCH SECTION ENDS HERE
 // *************************************************     
- 
-// *************************************************
-//     POV HATS SECTION
-// *************************************************
+
+// *********************************************************
+//     POV HATS SECTION Hats can have 9 positions.
+//     -1 (nothing pressed) + degrees 0-315 with step of 45.
+// *********************************************************
     for (int i = 0; i <= (HATnum - 1); i++) {
       if (bitRead(switchVar[HATreg[i]], HATpin[i]) != bitRead(lastState[HATreg[i]], HATpin[i])) {
           // reset the debouncing timer
@@ -294,12 +306,10 @@ void loop() {
                //action on button press
                Joystick.setHatSwitch(0, ((i + 1) * 90));
                HATstate[i] = ((i + 1) * 90);
-               Joystick.sendState();
                }
               else {
                //action on button release
                Joystick.setHatSwitch(0, -1);
-               Joystick.sendState();
                HATstate[i] = -1;
              }
             }
@@ -314,41 +324,26 @@ void loop() {
 //     ENCODERS SECTION
 // *************************************************
    for (int i = 0; i <= (ENCnum - 1); i++) {
-     lastDebounceTime = millis();
-     if(lastDebounceTime >= (loopTime)){ //Encoder time check
       ENCA[i] = bitRead(switchVar[ENCregA[i]], ENCpinA[i]);     // Reads encoder state A 
       ENCB[i] = bitRead(switchVar[ENCregB[i]], ENCpinB[i]);     // Reads encoder state B 
-      if((!ENCA[i]) && (ENC_Aprev[i])){    // If state changes
+       if((!ENCA[i]) && (ENC_Aprev[i])){    // If state changes
        if(ENCB[i]) {
         //Encoder rotates A
-       Joystick.setHatSwitch(1, (i * 90));
-       Joystick.sendState();
-       lcd.setCursor(13, 1);
-       lcd.print(" ");
-       lcd.print(i+1);
-       lcd.print(">");
+        Joystick.setHatSwitch(1, (i * 90));
+        delay(ENCtime[i]);
+        Joystick.setHatSwitch(1, -1);
        }   
        else { 
         //Encoder rotates B
         Joystick.setHatSwitch(1, ((i * 90)+180));
-       Joystick.sendState();
-       lcd.setCursor(13, 1);
-       lcd.print("<");
-       lcd.print(i+1);
-       lcd.print(" ");
-       }   
-      }   
+        delay(ENCtime[i]);
+        Joystick.setHatSwitch(1, -1);
+       }  
+      }     
+      ENC_Aprev[i] = ENCA[i];     // Save A state  
      }
-    ENC_Aprev[i] = ENCA[i];     // Save A state
-   }
-  loopTime = lastDebounceTime;
-  if (lastDebounceTime % 15 == 0) {
-       Joystick.setHatSwitch(1, -1);
-       Joystick.sendState();
-       lcd.setCursor(9, 1);
-       lcd.print("ENC:   ");
-       }
-    
+
+   
 // *************************************************
 //     ENCODERS SECTION ENDS HERE
 // *************************************************
@@ -363,27 +358,27 @@ void loop() {
   sensorValueY = analogRead(yAxis);   // reading Y axis
   sensorValueZ = analogRead(zAxis);   // reading Z axis
   sensorValueRx = analogRead(rXAxis); // reading Rx axis
-
-  // apply the calibration to the sensor reading
-  sensorValueX = map(sensorValueX, sensorMinX, sensorMaxX, -127, 127);
-  sensorValueY = map(sensorValueY, sensorMinY, sensorMaxY, -127, 127);
-  sensorValueZ = map(sensorValueZ, sensorMinZ, sensorMaxZ, -127, 127);
-  sensorValueRx = map(sensorValueRx, sensorMinRx, sensorMaxRx, 0, 359);
+   
+// apply the calibration to the sensor reading
+  sensorValueX = map(sensorValueX, sensorMinX, sensorMaxX, -32767, 32767);
+  sensorValueY = map(sensorValueY, sensorMinY, sensorMaxY, -32767, 32767);
+  sensorValueZ = map(sensorValueZ, sensorMinZ, sensorMaxZ, -32767, 32767);
+  sensorValueRx = map(sensorValueRx, sensorMinRx, sensorMaxRx, -32767, 32767);
 
   // in case the sensor value is outside the range seen during calibration
-  sensorValueX = constrain(sensorValueX, -127, 127);
-  sensorValueY = constrain(sensorValueY, -127, 127);
-  sensorValueZ = constrain(sensorValueZ, -127, 127);
-  sensorValueRx = constrain(sensorValueRx, 0, 359);
+  sensorValueX = constrain(sensorValueX, -32767, 32767);
+  sensorValueY = constrain(sensorValueY, -32767, 32767);
+  sensorValueZ = constrain(sensorValueZ, -32767, 32767);
+  sensorValueRx = constrain(sensorValueRx, -32767, 32767);
 
   Joystick.setXAxis(sensorValueX);
   Joystick.setYAxis(sensorValueY);
   Joystick.setZAxis(sensorValueZ);
-  Joystick.setXAxisRotation(sensorValueRx);
+  Joystick.setRxAxis(sensorValueRx);
+  //Joystick.setRyAxis(sensorValueRx);
+  //Joystick.setRzAxis(sensorValueRx);
 
-  Joystick.sendState();
-
-  int ledstrip = sensorValueX;
+  /*int ledstrip = sensorValueX;
   ledstrip = map(ledstrip,127,-127,0,NUMPIXELS);
   // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
   pixels.clear();
@@ -391,11 +386,10 @@ void loop() {
   for (int i = 0; i <= ledstrip; i++){
    pixels.setPixelColor(i-1, pixels.Color(10, 0, 0)); // RGB
     }
-   pixels.show(); // This sends the updated pixel color to the hardware.
-  
+   pixels.show(); // This sends the updated pixel color to the hardware.*/
 
+ 
 
-  
   //    *******************************************************
   //                 AXIS CALIBRATION (auto)
   //    
@@ -448,6 +442,9 @@ void loop() {
   if (sensorValueRx < sensorMinRx) {
     sensorMinRx = sensorValueRx;
   }
+      
+  lastlooptime = millis() - looptime;
+
 }
 
 //------------------------------------------------end main loop
@@ -503,6 +500,7 @@ byte shiftIn(int myDataPin, int myClockPin) {
   //Serial.println();
   //Serial.println(myDataIn, BIN);
   return myDataIn;
+
 }
 
 ////// ----------------------------------------getBit
