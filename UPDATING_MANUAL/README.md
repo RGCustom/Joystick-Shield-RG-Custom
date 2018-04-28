@@ -53,6 +53,8 @@ Prepare Arduino IDE to upload firmware.
 ![Step6](PICS/11_verify_ok.jpg)
 ### After that hit upload button
 ![Step6](PICS/12_upload.jpg)
+
+# STEP 7 -= SKIP THIS STEP IF ARDUINO ALREADY HAS UPLOADED JOYSTICK CODE =-
 #### After firmware will compile, Arduino IDE will start looking for controller in bootloader state
 ### And will start scanning ports for arduino, showing smth like
 PORTS {COM1, COM2, COM14, } / {COM1, COM2, COM14, } => {}
