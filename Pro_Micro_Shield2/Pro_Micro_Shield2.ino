@@ -76,6 +76,30 @@ uint8_t hatSwitchCount = 2;
 //**************************************************
 //        AXIS INPUTS SETUP / НАСТРОЙКА ОСЕЙ
 //**************************************************
+const int xAxisFilter = 4;         // smoothing for X axis
+const int yAxisFilter = 4;         // smoothing for Y axis
+const int zAxisFilter = 4;         // smoothing for Z axis
+const int rXAxisFilter = 4;        // smoothing for rX axis
+
+int xAxisRead[xAxisFilter];         // readings for X axis
+int yAxisRead[yAxisFilter];         // readings for Y axis
+int zAxisRead[zAxisFilter];         // readings for Z axis
+int rXAxisRead[rXAxisFilter];        // readings for rX axis
+
+int xAxisIndex = 0;         // the index of the currentreadings for X axis
+int yAxisIndex = 0;         // the index of the currentreadings for Y axis
+int zAxisIndex = 0;         // the index of the currentreadings for Z axis
+int rXAxisIndex = 0;        // the index of the currentreadings for rX axis
+
+int xAxisTotal = 0;         // the running total for X axis
+int yAxisTotal = 0;         // the running total for Y axis
+int zAxisTotal = 0;         // the running total for Z axis
+int rXAxisTotal = 0;        // the running total for rX axis
+
+int xAxisAverage = 0;         // the average for X axis
+int yAxisAverage = 0;         // the average for Y axis
+int zAxisAverage = 0;         // the average for Z axis
+int rXAxisAverage = 0;        // the average for rX axis
 
 const int xAxis = A0;         // analog sensor for X axis
 const int yAxis = A3;         // analog sensor for Y axis
@@ -165,12 +189,12 @@ void setup() {
   Joystick.begin(initAutoSendState);
   
  //defining axis ranges
-  Joystick.setXAxisRange(-32767, 32767);
-  Joystick.setYAxisRange(-32767, 32767); 
-  Joystick.setZAxisRange(-32767, 32767); 
-  Joystick.setRxAxisRange(-32767, 32767);
-  Joystick.setRyAxisRange(-32767, 32767);
-  Joystick.setRzAxisRange(-32767, 32767); 
+  Joystick.setXAxisRange(-32768, 32767);
+  Joystick.setYAxisRange(-32768, 32767); 
+  Joystick.setZAxisRange(-32768, 32767); 
+  Joystick.setRxAxisRange(-32768, 32767);
+  Joystick.setRyAxisRange(-32768, 32767);
+  Joystick.setRzAxisRange(-32768, 32767); 
 //  Joystick.setRudderAxisRange(0, 1023);
 //  Joystick.setThrottleAxisRange(0, 1023); 
 
@@ -359,17 +383,56 @@ void loop() {
   sensorValueZ = analogRead(zAxis);   // reading Z axis
   sensorValueRx = analogRead(rXAxis); // reading Rx axis
    
-// apply the calibration to the sensor reading
-  sensorValueX = map(sensorValueX, sensorMinX, sensorMaxX, -32767, 32767);
-  sensorValueY = map(sensorValueY, sensorMinY, sensorMaxY, -32767, 32767);
-  sensorValueZ = map(sensorValueZ, sensorMinZ, sensorMaxZ, -32767, 32767);
-  sensorValueRx = map(sensorValueRx, sensorMinRx, sensorMaxRx, -32767, 32767);
+  //*************************************************
+  //             Axis controls smoothing
+  //*************************************************
+    xAxisTotal = xAxisTotal - xAxisRead[xAxisIndex];  // subtract the last reading:
+    xAxisRead[xAxisIndex] = sensorValueX;  // read from the sensor:
+    xAxisTotal = xAxisTotal + xAxisRead[xAxisIndex];  // add the reading to the total:
+    xAxisIndex = xAxisIndex + 1; // advance to the next position in the array:
+    if (xAxisIndex >= xAxisFilter) { // if we're at the end of the array...
+      xAxisIndex = 0;    // ...wrap around to the beginning:
+    }
+    xAxisAverage = xAxisTotal / xAxisFilter; // calculate the average:
+
+    yAxisTotal = yAxisTotal - yAxisRead[yAxisIndex];  // subtract the last reading:
+    yAxisRead[yAxisIndex] = sensorValueY;  // read from the sensor:
+    yAxisTotal = yAxisTotal + yAxisRead[yAxisIndex];  // add the reading to the total:
+    yAxisIndex = yAxisIndex + 1; // advance to the next position in the array:
+    if (yAxisIndex >= yAxisFilter) { // if we're at the end of the array...
+      yAxisIndex = 0;    // ...wrap around to the beginning:
+    }
+    yAxisAverage = yAxisTotal / yAxisFilter; // calculate the average:
+
+    zAxisTotal = zAxisTotal - zAxisRead[zAxisIndex];  // subtract the last reading:
+    zAxisRead[zAxisIndex] = sensorValueZ;  // read from the sensor:
+    zAxisTotal = zAxisTotal + zAxisRead[zAxisIndex];  // add the reading to the total:
+    zAxisIndex = zAxisIndex + 1; // advance to the next position in the array:
+    if (zAxisIndex >= zAxisFilter) { // if we're at the end of the array...
+      zAxisIndex = 0;    // ...wrap around to the beginning:
+    }
+    zAxisAverage = zAxisTotal / zAxisFilter; // calculate the average:
+
+    rXAxisTotal = rXAxisTotal - rXAxisRead[rXAxisIndex];  // subtract the last reading:
+    rXAxisRead[rXAxisIndex] = sensorValueRx;  // read from the sensor:
+    rXAxisTotal = rXAxisTotal + rXAxisRead[rXAxisIndex];  // add the reading to the total:
+    rXAxisIndex = rXAxisIndex + 1; // advance to the next position in the array:
+    if (rXAxisIndex >= rXAxisFilter) { // if we're at the end of the array...
+      rXAxisIndex = 0;    // ...wrap around to the beginning:
+    }
+    rXAxisAverage = rXAxisTotal / rXAxisFilter; // calculate the average:
+
+  // apply the calibration to the sensor reading
+  sensorValueX = map(xAxisAverage, sensorMinX, sensorMaxX, -32768, 32767);
+  sensorValueY = map(yAxisAverage, sensorMinY, sensorMaxY, -32768, 32767);
+  sensorValueZ = map(zAxisAverage, sensorMinZ, sensorMaxZ, -32768, 32767);
+  sensorValueRx = map(rXAxisAverage, sensorMinRx, sensorMaxRx, -32768, 32767);
 
   // in case the sensor value is outside the range seen during calibration
-  sensorValueX = constrain(sensorValueX, -32767, 32767);
-  sensorValueY = constrain(sensorValueY, -32767, 32767);
-  sensorValueZ = constrain(sensorValueZ, -32767, 32767);
-  sensorValueRx = constrain(sensorValueRx, -32767, 32767);
+  sensorValueX = constrain(sensorValueX, -32768, 32767);
+  sensorValueY = constrain(sensorValueY, -32768, 32767);
+  sensorValueZ = constrain(sensorValueZ, -32768, 32767);
+  sensorValueRx = constrain(sensorValueRx, -32768, 32767);
 
   Joystick.setXAxis(sensorValueX);
   Joystick.setYAxis(sensorValueY);
