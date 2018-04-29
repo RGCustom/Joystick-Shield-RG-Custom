@@ -91,10 +91,10 @@ int yAxisIndex = 0;         // the index of the currentreadings for Y axis
 int zAxisIndex = 0;         // the index of the currentreadings for Z axis
 int rXAxisIndex = 0;        // the index of the currentreadings for rX axis
 
-int xAxisTotal = 0;         // the running total for X axis
-int yAxisTotal = 0;         // the running total for Y axis
-int zAxisTotal = 0;         // the running total for Z axis
-int rXAxisTotal = 0;        // the running total for rX axis
+long xAxisTotal = 0;         // the running total for X axis
+long yAxisTotal = 0;         // the running total for Y axis
+long zAxisTotal = 0;         // the running total for Z axis
+long rXAxisTotal = 0;        // the running total for rX axis
 
 int xAxisAverage = 0;         // the average for X axis
 int yAxisAverage = 0;         // the average for Y axis
@@ -374,15 +374,27 @@ void loop() {
 
 
  //*************************************************
- //             Axis controls
- //*************************************************
+  //             Axis controls
+  //*************************************************
   //reading analogue controls
 
   sensorValueX = analogRead(xAxis);   // reading X axis
   sensorValueY = analogRead(yAxis);   // reading Y axis
   sensorValueZ = analogRead(zAxis);   // reading Z axis
   sensorValueRx = analogRead(rXAxis); // reading Rx axis
-   
+
+  // apply the calibration to the sensor reading
+  sensorValueX = map(sensorValueX, sensorMinX, sensorMaxX, -32768, 32767);
+  sensorValueY = map(sensorValueY, sensorMinY, sensorMaxY, -32768, 32767);
+  sensorValueZ = map(sensorValueZ, sensorMinZ, sensorMaxZ, -32768, 32767);
+  sensorValueRx = map(sensorValueRx, sensorMinRx, sensorMaxRx, -32768, 32767);
+
+  // in case the sensor value is outside the range seen during calibration
+  sensorValueX = constrain(sensorValueX, -32768, 32767);
+  sensorValueY = constrain(sensorValueY, -32768, 32767);
+  sensorValueZ = constrain(sensorValueZ, -32768, 32767);
+  sensorValueRx = constrain(sensorValueRx, -32768, 32767);
+
   //*************************************************
   //             Axis controls smoothing
   //*************************************************
@@ -422,24 +434,13 @@ void loop() {
     }
     rXAxisAverage = rXAxisTotal / rXAxisFilter; // calculate the average:
 
-  // apply the calibration to the sensor reading
-  sensorValueX = map(xAxisAverage, sensorMinX, sensorMaxX, -32768, 32767);
-  sensorValueY = map(yAxisAverage, sensorMinY, sensorMaxY, -32768, 32767);
-  sensorValueZ = map(zAxisAverage, sensorMinZ, sensorMaxZ, -32768, 32767);
-  sensorValueRx = map(rXAxisAverage, sensorMinRx, sensorMaxRx, -32768, 32767);
-
-  // in case the sensor value is outside the range seen during calibration
-  sensorValueX = constrain(sensorValueX, -32768, 32767);
-  sensorValueY = constrain(sensorValueY, -32768, 32767);
-  sensorValueZ = constrain(sensorValueZ, -32768, 32767);
-  sensorValueRx = constrain(sensorValueRx, -32768, 32767);
-
-  Joystick.setXAxis(sensorValueX);
-  Joystick.setYAxis(sensorValueY);
-  Joystick.setZAxis(sensorValueZ);
-  Joystick.setRxAxis(sensorValueRx);
+  Joystick.setXAxis(xAxisAverage);
+  Joystick.setYAxis(yAxisAverage);
+  Joystick.setZAxis(zAxisAverage);
+  Joystick.setRxAxis(rXAxisAverage);
   //Joystick.setRyAxis(sensorValueRx);
   //Joystick.setRzAxis(sensorValueRx);
+
 
   /*int ledstrip = sensorValueX;
   ledstrip = map(ledstrip,127,-127,0,NUMPIXELS);
